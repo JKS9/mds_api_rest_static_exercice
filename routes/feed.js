@@ -1,22 +1,13 @@
-const express = require('express')
-const feedController = require('../controller/feed')
-const router = express.Router()
+const todoListController = require('../controller/feed');
 
-// GET /feed/getAll
-router.get('/getAll', feedController.getPosts)
+module.exports = (app) => {
+  app.route('/todoitems').get(todoListController.getAll);
+  app.route('/todoitems').post(todoListController.create);
+  app.route('/todoitems/:id').get(todoListController.get);
+  app.route('/todoitems/:id').put(todoListController.update);
+  app.route('/todoitems/:id').delete(todoListController.delete);
 
-// GET /feed/getOne
-router.get('/getOne/:id', feedController.getOne)
-
-// POST /feed/addPost
-router.post('/addPost', feedController.createPost)
-
-// PUT /feed/updateOne
-router.put('/updateOne/:id', feedController.updateOne)
-
-// PUT /feed/updateOne
-router.delete('/deleteOne/:id', feedController.deleteOne)
-
-
-
-module.exports = router
+  app.use((req, res) => {
+    res.status(404).json({url: req.originalUrl, error: 'not found'});
+  });
+};
